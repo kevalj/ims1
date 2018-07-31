@@ -1,0 +1,121 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js"></script> 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css"/>
+
+
+
+<div id="page-wrapper">
+			<div class="main-page">
+				<div class="tables">
+					
+					<div class="panel-body widget-shadow">
+						
+						<div class="table-responsive bs-example widget-shadow">
+						<h4>My Account</h4>
+						<h4>User List</h4>
+						<table class="table table-bordered" id="user"> 
+						<thead> 
+						<tr> 
+						<th>#</th> 
+						<th>User Name</th> 
+						<th>User Id</th>
+						<th>Password</th>
+						<th>EmailId</th> 
+						<th>Gender</th> 
+						<th>Role</th> 
+						<th>Action</th> 
+						</tr> 
+						</thead> 
+						<tbody> 
+						<?php $i=1;?>
+						<?php foreach($get_companyuser_data as $data): ?>
+						<tr> 
+						<th scope="row"><?php echo $i;?></th> 
+						<td><?php echo $data['user_name'] ;?></td> 
+						<td><?php echo $data['user_id'] ;?></td> 
+						<td>******</td> 
+						<td><?php echo $data['email'] ;?></td> 
+						<td><?php echo $data['gender'] ;?></td> 
+						<td><?php if($data['is_admin']=='Y') { echo "Admin"; } else{ echo "User";} ?></td> 
+						<td><?php if($data['is_admin']=='Y') { echo ""; } else{ echo "<button onclick='deleteuser(\"".$data['id']."\")'>Delete</button>";} ?></td>
+						</tr>  
+						<?php $i++;?>
+						<?php endforeach; ?>
+						</tbody> </table> 
+						<input type="hidden" id="incid" value="<?php echo $i ?>">
+						<button class="btn btn-primary btn-flat btn-pri btn-lg" onclick="adduser()"><i class="fa fa-plus" aria-hidden="true" ></i>Add User</button>
+					</div>
+					</div>
+					</div>
+					</div>
+					</div>
+
+					<script>
+					var id=parseInt($("#incid").val());;
+					function adduser(){
+						
+						//alert("hii");
+						   $('#user tbody').append('<tr><th>'+id+'</th><td><input type="text" class="form-control1" id="username'+id+'" name="username'+id+'" placeholder="Enter User Name"></td><td><input type="text" class="form-control1" id="userid'+id+'" name="userid'+id+'" placeholder="Enter User Id"></td><td><input type="password" class="form-control1" id="password'+id+'" name="password'+id+'" placeholder="Enter Password"></td><td><input type="email" class="form-control1" id="email'+id+'" name="email'+id+'" placeholder="Enter EmailId"></td><td><input type="radio" class="radioBtnClass"  name="gender'+id+'" id="gender'+id+'" required="" value="M">Male<input type="radio" class="radioBtnClass"  name="gender'+id+'" id="gender'+id+'" required="" value="F">Female</td><td>User</td><td><button name="save" onclick="createuser(\''+id+'\')">Create</button></td></tr>');
+
+					id++;
+					}
+
+					function createuser(id){
+						//alert(id);
+
+						var userid=$( "#userid"+id).val();
+						var username=$( "#username"+id).val();
+						var password=$( "#password"+id).val();
+						var email=$( "#email"+id).val();
+						var gender=$("input[type='radio'].radioBtnClass:checked").val();
+						//alert(gender);
+						
+						//alert(customer_name);
+
+						//var status=$( "#"+id ).val();
+						var postData = {
+								"userid" : userid,
+								"username" : username,
+									"password" : password,
+								"email" : email,
+									"gender" : gender
+							};
+						$.ajax({
+							type: "POST",
+							url: '<?php echo base_url(); ?>index.php/home/add_user',
+							data: postData,
+							success: function(data){
+								//alert(data);
+								if($.trim(data)=="success") {
+								alert("User added successfully");
+								location.reload();
+								} else{
+									alert(data);
+								}
+							}
+						});
+					}
+
+					function deleteuser(id){
+
+						var userid=id;
+						var postData = {
+								"userid" : userid
+							};
+						$.ajax({
+							type: "POST",
+							url: '<?php echo base_url(); ?>index.php/home/delete_user',
+							data: postData,
+							success: function(data){
+								if($.trim(data)=="success") {
+								alert("User deleted successfully");
+								location.reload();
+								} else{
+									alert(data);
+								}
+							}
+						});
+
+					}
+				</script>
+		

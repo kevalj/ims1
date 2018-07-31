@@ -1,0 +1,93 @@
+<?php
+class Report_model extends CI_Model {
+
+        public function __construct()
+        {
+                $this->load->database();
+				$this->load->library('session');
+				$this->load->helper('date');
+
+        }
+
+		
+
+
+
+
+		public function getTotalInventoryData()
+		{
+			$query="select count(*) cnt from inventory_master where status!='D'";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+		public function getInventoryTypewiseData()
+		{
+			$query="select it.inventory_type_id,it.inventory_name,count(*) cnt	 from inventory_master im
+					inner join inventory_type it on it.inventory_type_id=im.inventory_type_id
+					where it.status!='D' and im.status!='D'
+					group by it.inventory_type_ids";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+		public function getProjectwiseData()
+		{
+			$query="select pm.project_id,pm.project_name,it.inventory_type_id,it.inventory_name,count(*) cnt	 from inventory_project_relation ipr
+					inner join inventory_master im on ipr.inventory_master_id=im.inventory_master_id
+					inner join inventory_type it on it.inventory_type_id=im.inventory_type_id
+					inner join project_master pm on pm.project_id=ipr.project_id
+					#where ipr.status='Y' 
+					group by pm.project_id";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+		public function getPOSwiseData()
+		{
+			$query="select ppd.project_pos_details_id,ppd.pos_name,pm.project_id,pm.project_name,it.inventory_type_id,it.inventory_name,count(*) cnt from inventory_pos_relation ipor
+			inner join inventory_project_relation  ipr on ipor.inventory_project_relation_id=ipr.inventory_project_relation_id
+			inner join inventory_master im on ipr.inventory_master_id=im.inventory_master_id
+			inner join inventory_type it on it.inventory_type_id=im.inventory_type_id
+			inner join project_pos_details ppd on ppd.project_pos_details_id=ipor.project_pos_details_id
+			inner join project_master pm on pm.project_id=ppd.project_master_id
+			#where ipor.status='Y' 
+			group by pm.project_id,ppd.project_pos_details_id";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+
+		public function getInventoryDetailData()
+		{
+			$query="select im.inventory_master_id,im.inventory_no,im.inventory_sr_no,it.inventory_type_id,it.inventory_name	 from inventory_master im
+					inner join inventory_type it on it.inventory_type_id=im.inventory_type_id
+					where im.status!='D'";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+
+		public function getFaultyInventoryData()
+		{
+			$query="select fi.faultyId,fi.project_service_center_id,psc.service_center_name,fi.inventory_master_id,fi.inventory_project_relation_id,
+fi.inventory_pos_relation_id,it.inventory_name,im.inventory_no,im.inventory_sr_no,pm.project_id,pm.project_name,ppd.project_pos_details_id,ppd.pos_name,rm.stCategoryReasonName 
+,fi.issue_date,fi.resolve_date,rm.stCategoryReasonName issuereason,rm1.stCategoryReasonName resolvereason
+from faulty_inventory fi
+inner join project_service_center psc on psc.project_service_center_id=fi.project_service_center_id
+inner join inventory_master im on im.inventory_master_id=fi.inventory_master_id
+inner join inventory_type it on it.inventory_type_id=im.inventory_type_id
+left join inventory_project_relation ipr on ipr.inventory_project_relation_id=fi.inventory_project_relation_id
+left join project_master pm on pm.project_id=ipr.project_id
+left join inventory_pos_relation ipor on ipor.inventory_pos_relation_id=fi.inventory_pos_relation_id
+left join project_pos_details ppd on ppd.project_pos_details_id=ipor.project_pos_details_id
+inner join reason_master rm on rm.reason_id= fi.issue_reason_id
+left join reason_master rm1 on rm1.reason_id= fi.resolve_reason_id";
+			return $query = $this->db->query($query);
+			//return $query->result_array();
+		}
+
+
+
+		
+}

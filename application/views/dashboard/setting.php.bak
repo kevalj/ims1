@@ -1,0 +1,43 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.js"></script> 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.13/datatables.min.css"/>
+
+
+
+<div id="page-wrapper">
+			<div class="main-page">
+				<div class="tables">
+					
+					<div class="panel-body widget-shadow">
+					<form action="<?php echo base_url(); ?>index.php/home/chngsetting" class="form-horizontal" method="post">	
+						<div class="table-responsive bs-example widget-shadow">
+						<h4>My setting</h4>
+						<div class="alert alert-danger" role="alert">
+									<strong><?php echo validation_errors(); ?></strong> 
+								</div>
+						<table class="table table-bordered" id="user"> 
+						<?php foreach($get_user_data as $data): ?>
+						<thead> 
+						<tr> 
+						<th>EmailId</th> 
+						<th><input type="email" name="email" value="<?php echo $data['email'] ;?>"/></th>
+						<input type="hidden" name="userid" value="<?php echo $data['id'] ;?>"/>
+						</tr> 
+						</thead> 
+						<tr> 
+						<th>Password</th> 
+						<th><input type="password" name="password" value="<?php echo $data['password'] ;?>"/></th> 
+						</tr>
+						</thead>
+						<?php endforeach; ?>
+						</table>
+						
+						<input type="submit" class="btn btn-primary btn-flat btn-pri btn-lg"  value="Update Info">
+					</div>
+					</form>
+					</div>
+					</div>
+					</div>
+					</div>
+
+					

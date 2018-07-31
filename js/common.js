@@ -1,0 +1,29 @@
+function formatno(no,id){
+	 //alert(no);
+	 if(no==""){
+		 formatno='0.0';
+	 } else{
+	  var formatno="";
+	  var no =no.replace(/,\s?/g, "");
+
+	  var p = parseFloat(no).toFixed(2).split(".");
+    formatno=   p[0].split("").reverse().reduce(function(acc, num, i, orig) {
+        return  num + (i && !(i % 3) ? "," : "") + acc;
+    }, "") + "." + p[1];
+	 }
+	$("#"+id).val(formatno);
+	//alert(formatno);
+  }
+
+
+  function toNumeric(string) {
+    return parseInt(string.replace(/\D/g, ""), 10);
+}
+
+$('input').each(function(){
+  $(this).trigger('blur');
+  //each input event one by one... will be blured
+})
+
+$("select").chosen();
+
